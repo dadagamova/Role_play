@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)https://iolenyak-sudo.github.io/Yana/all_rounds_observer_v2.html -->
+<html lang="ru" data-lt-installed="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карточка наблюдателя</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f7f0; padding: 1.25rem; color: #1a1a18; min-height: 100vh; }
+.header { background: #1D9E75; color: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; }
+.header-role { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; opacity: .7; margin-bottom: 4px; }
+.header-title { font-size: 16px; font-weight: 600; }
+.header-sub { font-size: 12px; opacity: .75; margin-top: 4px; }
+.nav-block { background: white; border-radius: 12px; border: 1px solid #9FE1CB; overflow: hidden; margin-bottom: 14px; }
+.round-row { display: flex; border-bottom: 1px solid #9FE1CB; }
+.round-btn { flex: 1; padding: 10px 6px; font-size: 11px; font-weight: 600; color: #1D9E75; cursor: pointer; background: transparent; border: none; border-right: 1px solid #9FE1CB; transition: all .15s; text-align: center; }
+.round-btn:last-child { border-right: none; }
+.round-btn:hover:not(.locked) { background: #e8f5e9; }
+.round-btn.active { background: #1D9E75; color: white; }
+.round-btn.locked { color: #bbb; background: #f9f9f9; cursor: default; }
+.rbig { font-size: 13px; font-weight: 700; display: block; margin-bottom: 1px; }
+.rlock { font-size: 15px; display: block; margin-bottom: 1px; }
+.rsub { font-size: 10px; display: block; }
+.zal-row { display: flex; }
+.zal-btn { flex: 1; padding: 10px 8px; font-size: 12px; font-weight: 600; color: #555; cursor: pointer; background: transparent; border: none; border-right: 1px solid #c8eed8; transition: all .15s; text-align: center; }
+.zal-btn:last-child { border-right: none; }
+.zal-btn:hover { background: #f0f7f0; }
+.zal-btn.active { background: #1D9E75; color: white; }
+.round-panel { display: none; }
+.round-panel.visible { display: block; }
+.zal-panel { display: none; }
+.zal-panel.visible { display: block; }
+.task-box { background: #1D9E75; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.task-text { font-size: 13px; color: #E1F5EE; line-height: 1.65; }
+.ctx-block { background: white; border-radius: 10px; border: 1px solid #9FE1CB; padding: 10px 12px; margin-bottom: 14px; }
+.ctx-title { font-size: 13px; font-weight: 700; color: #1a1a18; margin-bottom: 4px; }
+.ctx-barrier { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 5px; }
+.ctx-desc { font-size: 12px; color: #555; line-height: 1.55; }
+.ctx-barrier-desc { font-size: 11px; color: #085041; background: #E1F5EE; border-radius: 4px; padding: 2px 6px; margin-bottom: 4px; display: inline-block; }
+.score-wrap { background: white; border-radius: 12px; border: 1px solid #9FE1CB; padding: 12px 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.score-num { font-size: 36px; font-weight: 700; color: #085041; line-height: 1; }
+.score-num span { font-size: 15px; color: #aaa; font-weight: 400; }
+.verdict { font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; }
+.v-great { background: #E1F5EE; color: #085041; }
+.v-good { background: #FAEEDA; color: #633806; }
+.v-try { background: #FCEBEB; color: #791F1F; }
+.q-block { background: white; border-radius: 10px; border: 1px solid #e4e4e4; overflow: hidden; margin-bottom: 10px; }
+.q-head { padding: 11px 14px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: flex-start; gap: 10px; }
+.q-num { width: 26px; height: 26px; border-radius: 50%; background: #1D9E75; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.q-text { font-size: 13px; font-weight: 600; color: #1a1a18; line-height: 1.4; }
+.q-hint { font-size: 11px; color: #888; margin-top: 3px; line-height: 1.4; }
+.q-opts { display: flex; gap: 8px; padding: 10px 14px; }
+.opt-btn { flex: 1; padding: 9px 6px; border-radius: 8px; border: 1.5px solid #e0e0e0; background: transparent; font-size: 12px; font-weight: 600; color: #555; cursor: pointer; transition: all .15s; text-align: center; }
+.opt-btn:hover { border-color: #9FE1CB; background: #f4faf7; }
+.opt-btn.yes { border-color: #1D9E75; background: #E1F5EE; color: #085041; }
+.opt-btn.partial { border-color: #EF9F27; background: #FAEEDA; color: #633806; }
+.opt-btn.no { border-color: #E24B4A; background: #FCEBEB; color: #791F1F; }
+.fb-block { background: white; border-radius: 12px; border: 1px solid #e4e4e4; overflow: hidden; margin-bottom: 12px; }
+.fb-head { background: #f5f5f3; padding: 10px 14px; border-bottom: 1px solid #eee; }
+.fb-head-title { font-size: 13px; font-weight: 700; }
+.fb-head-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.fb-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.fb-step { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; }
+.fb-step-n { width: 24px; height: 24px; border-radius: 50%; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fb-step-t { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.fb-step-s { font-size: 12px; color: #666; line-height: 1.45; }
+.reset-btn { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #9FE1CB; background: transparent; font-size: 13px; font-weight: 600; color: #1D9E75; cursor: pointer; transition: all .15s; margin-bottom: 12px; }
+.reset-btn:hover { background: #e8f5e9; }
+.lock-wrap { background: white; border-radius: 12px; border: 1px solid #9FE1CB; padding: 32px 16px; text-align: center; }
+.lock-ico { font-size: 40px; margin-bottom: 12px; }
+.lock-t { font-size: 15px; font-weight: 700; color: #1a1a18; margin-bottom: 6px; }
+.lock-s { font-size: 12px; color: #999; margin-bottom: 20px; line-height: 1.6; }
+.lock-inp { width: 100%; max-width: 200px; border: 1.5px solid #9FE1CB; border-radius: 8px; padding: 10px 14px; font-size: 16px; text-align: center; outline: none; font-family: inherit; margin-bottom: 10px; letter-spacing: .08em; }
+.lock-inp:focus { border-color: #1D9E75; }
+.lock-btn-el { display: block; margin: 0 auto; padding: 10px 28px; border-radius: 8px; border: none; font-size: 13px; font-weight: 700; color: white; cursor: pointer; background: #1D9E75; }
+.lock-btn-el:hover { background: #085041; }
+.lock-err { font-size: 12px; color: #c0392b; margin-top: 10px; display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p class="header-role">Ролевая игра · Управление изменениями</p>
+  <p class="header-title">👁 Карточка наблюдателя</p>
+  <p class="header-sub">Выбери раунд и зал · отмечай по ходу разговора</p>
+</div>
+
+<div class="nav-block">
+  <div class="round-row">
+    <button class="round-btn" id="rb0" onclick="showRound(0)"><span class="rbig">Р1</span><span class="rsub">Раунд 1</span></button>
+    <button class="round-btn" id="rb1" onclick="tryRound(1)"><span class="rbig">Р2</span><span class="rsub">Раунд 2</span></button>
+    <button class="round-btn active" id="rb2" onclick="tryRound(2)"><span class="rbig">Р3</span><span class="rsub">Раунд 3</span></button>
+  </div>
+  <div id="zalRow"><div class="zal-row"><button class="zal-btn" onclick="showZal(2,0)">🏠 Зал 1</button><button class="zal-btn active" onclick="showZal(2,1)">🏠 Зал 2</button></div></div>
+</div>
+
+<div id="allPanels">
+
+<!-- ===== РАУНД 1 ===== -->
+<div class="round-panel" id="rp0">
+  <div class="task-box"><p class="task-text">Останови раунд после 4 минут диалога, спроси как прошёл разговор и дай обратную связь по схеме ниже.</p></div>
+
+  <!-- Зал 1 -->
+  <div class="zal-panel" id="r0z0">
+    <div class="ctx-block">
+      <div class="ctx-title">Зал 1 · Переход на CRM</div>
+      <span class="ctx-barrier" style="background:#FAEEDA;color:#633806;">Барьер сотрудника: Desire</span>
+        <div class="ctx-barrier-desc">Понимает зачем изменение, но лично не хочет в нём участвовать</div>
+      <div class="ctx-desc">Сотрудник понимает зачем нужна CRM, но лично не хочет тратить время на переучивание. Говорит что уже пробовали и всё равно вернутся к Excel.</div>
+    </div>
+    <div class="score-wrap"><div class="score-num" id="s-r0z0">2.5 <span>/ 4</span></div><span class="verdict v-good" id="v-r0z0">👍 Хорошо</span></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">1</div><div><div class="q-text">Задал хотя бы один диагностический вопрос?</div><div class="q-hint">«Что тебя беспокоит?», «Что мешает?», «Что тебе нужно?»</div></div></div><div class="q-opts"><button class="opt-btn yes" onclick="ans('r0z0',0,'yes',1)" id="r0z0q0-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z0',0,'no',0)" id="r0z0q0-no">✗ Нет</button></div></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">2</div><div><div class="q-text">Слушал, не перебивал сотрудника?</div><div class="q-hint">Слушал больше чем говорил</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r0z0',1,'yes',1)" id="r0z0q1-yes">✓ Да</button><button class="opt-btn partial" onclick="ans('r0z0',1,'partial',0.5)" id="r0z0q1-partial">~ Частично</button><button class="opt-btn" onclick="ans('r0z0',1,'no',0)" id="r0z0q1-no">✗ Нет</button></div></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">3</div><div><div class="q-text">Правильно определил барьер в конце? (Desire)</div><div class="q-hint">Понимает зачем, но не хочет участвовать</div></div></div><div class="q-opts"><button class="opt-btn yes" onclick="ans('r0z0',2,'yes',1)" id="r0z0q2-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z0',2,'partial',0.5)" id="r0z0q2-partial">~ Частично</button><button class="opt-btn" onclick="ans('r0z0',2,'no',0)" id="r0z0q2-no">✗ Нет</button></div></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">4</div><div><div class="q-text">Применил формулу ЗПДО?</div><div class="q-hint">З — факты, П — что меняется/остаётся, Д — шаг, О — вопросы</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r0z0',3,'yes',1)" id="r0z0q3-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z0',3,'partial',0.5)" id="r0z0q3-partial">~ Частично</button><button class="opt-btn no" onclick="ans('r0z0',3,'no',0)" id="r0z0q3-no">✗ Нет</button></div></div>
+    <button class="reset-btn" onclick="resetCard('r0z0',4)">↺ Сбросить</button>
+  </div>
+
+  <!-- Зал 2 -->
+  <div class="zal-panel visible" id="r0z1">
+    <div class="ctx-block">
+      <div class="ctx-title">Зал 2 · Фиксация договорённостей</div>
+      <span class="ctx-barrier" style="background:#EAF3DE;color:#27500A;">Барьер сотрудника: Reinforcement</span>
+        <div class="ctx-barrier-desc">Делал по-новому, потом вернулся к старому. Новая привычка не закрепилась</div>
+      <div class="ctx-desc">Сотрудник три недели соблюдал стандарт идеально, потом скатился к старому. Говорит что на бегу некогда писать, коллеги и так понимают.</div>
+    </div>
+    <div class="score-wrap"><div class="score-num" id="s-r0z1">0 <span>/ 4</span></div><span class="verdict" id="v-r0z1"></span></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">1</div><div><div class="q-text">Задал хотя бы один диагностический вопрос?</div><div class="q-hint">«Что мешает?», «В каких ситуациях сложнее всего?»</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r0z1',0,'yes',1)" id="r0z1q0-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z1',0,'no',0)" id="r0z1q0-no">✗ Нет</button></div></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">2</div><div><div class="q-text">Слушал, не перебивал сотрудника?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r0z1',1,'yes',1)" id="r0z1q1-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z1',1,'partial',0.5)" id="r0z1q1-partial">~ Частично</button><button class="opt-btn" onclick="ans('r0z1',1,'no',0)" id="r0z1q1-no">✗ Нет</button></div></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">3</div><div><div class="q-text">Правильно определил барьер в конце? (Reinforcement)</div><div class="q-hint">Делал по-новому, потом откатился к старому</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r0z1',2,'yes',1)" id="r0z1q2-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z1',2,'partial',0.5)" id="r0z1q2-partial">~ Частично</button><button class="opt-btn" onclick="ans('r0z1',2,'no',0)" id="r0z1q2-no">✗ Нет</button></div></div>
+    <div class="q-block"><div class="q-head"><div class="q-num">4</div><div><div class="q-text">Применил формулу ЗПДО?</div><div class="q-hint">З — факты, П — что меняется/остаётся, Д — шаг, О — вопросы</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r0z1',3,'yes',1)" id="r0z1q3-yes">✓ Да</button><button class="opt-btn" onclick="ans('r0z1',3,'partial',0.5)" id="r0z1q3-partial">~ Частично</button><button class="opt-btn" onclick="ans('r0z1',3,'no',0)" id="r0z1q3-no">✗ Нет</button></div></div>
+    <button class="reset-btn" onclick="resetCard('r0z1',4)">↺ Сбросить</button>
+  </div>
+</div>
+
+<!-- ===== РАУНД 2 ===== -->
+<div class="round-panel" id="rp1">
+  <div class="lock-wrap" id="lock1" style="display: none;"><div class="lock-ico">🔒</div><p class="lock-t">Раунд 2 заблокирован</p><p class="lock-s">Тренер назовёт кодовое слово.</p><input class="lock-inp" id="inp1" type="text" placeholder="кодовое слово..." onkeydown="if(event.key==='Enter')unlock(1)"><button class="lock-btn-el" onclick="unlock(1)">Открыть</button><p class="lock-err" id="err1">Неверное слово</p></div>
+  <div id="cnt1" style="display: block;">
+    <div class="task-box"><p class="task-text">Останови раунд после 4 минут диалога, спроси как прошёл разговор и дай обратную связь по схеме ниже.</p></div>
+
+    <!-- Зал 1 -->
+    <div class="zal-panel visible" id="r1z0">
+      <div class="ctx-block">
+        <div class="ctx-title">Зал 1 · 1-on-1 встречи</div>
+        <span class="ctx-barrier" style="background:#E6F1FB;color:#042C53;">Барьер сотрудника: Awareness</span>
+        <div class="ctx-barrier-desc">Не понимает зачем нужно изменение и почему нельзя оставить всё как есть</div>
+        <div class="ctx-desc">Сотрудник не понимает зачем нужны 1-on-1. Говорит что и так общается с руководителем каждый день, это формализм.</div>
+      </div>
+      <div class="score-wrap"><div class="score-num" id="s-r1z0">0 <span>/ 4</span></div><span class="verdict" id="v-r1z0"></span></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">1</div><div><div class="q-text">Задал диагностический вопрос?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z0',0,'yes',1)" id="r1z0q0-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z0',0,'no',0)" id="r1z0q0-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">2</div><div><div class="q-text">Слушал, не перебивал?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z0',1,'yes',1)" id="r1z0q1-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z0',1,'partial',0.5)" id="r1z0q1-partial">~ Частично</button><button class="opt-btn" onclick="ans('r1z0',1,'no',0)" id="r1z0q1-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">3</div><div><div class="q-text">Правильно определил барьер? (Awareness)</div><div class="q-hint">Не понимает зачем изменение</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z0',2,'yes',1)" id="r1z0q2-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z0',2,'partial',0.5)" id="r1z0q2-partial">~ Частично</button><button class="opt-btn" onclick="ans('r1z0',2,'no',0)" id="r1z0q2-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">4</div><div><div class="q-text">Применил ЗПДО?</div><div class="q-hint">З — факты, П — что меняется/остаётся, Д — шаг, О — вопросы</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z0',3,'yes',1)" id="r1z0q3-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z0',3,'partial',0.5)" id="r1z0q3-partial">~ Частично</button><button class="opt-btn" onclick="ans('r1z0',3,'no',0)" id="r1z0q3-no">✗ Нет</button></div></div>
+      <button class="reset-btn" onclick="resetCard('r1z0',4)">↺ Сбросить</button>
+    </div>
+
+    <!-- Зал 2 -->
+    <div class="zal-panel" id="r1z1">
+      <div class="ctx-block">
+        <div class="ctx-title">Зал 2 · Реорганизация</div>
+        <span class="ctx-barrier" style="background:#EEEDFE;color:#3C3489;">Барьер сотрудника: Knowledge</span>
+        <div class="ctx-barrier-desc">Хочет делать правильно, но не понимает как. Нужна инструкция или пример</div>
+        <div class="ctx-desc">Сотрудник понимает зачем объединение, но не знает как теперь будет устроена работа. Растерян, нуждается в конкретике.</div>
+      </div>
+      <div class="score-wrap"><div class="score-num" id="s-r1z1">0 <span>/ 4</span></div><span class="verdict" id="v-r1z1"></span></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">1</div><div><div class="q-text">Задал диагностический вопрос?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z1',0,'yes',1)" id="r1z1q0-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z1',0,'no',0)" id="r1z1q0-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">2</div><div><div class="q-text">Слушал, не перебивал?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z1',1,'yes',1)" id="r1z1q1-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z1',1,'partial',0.5)" id="r1z1q1-partial">~ Частично</button><button class="opt-btn" onclick="ans('r1z1',1,'no',0)" id="r1z1q1-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">3</div><div><div class="q-text">Правильно определил барьер? (Knowledge)</div><div class="q-hint">Понимает зачем, но не знает как действовать</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z1',2,'yes',1)" id="r1z1q2-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z1',2,'partial',0.5)" id="r1z1q2-partial">~ Частично</button><button class="opt-btn" onclick="ans('r1z1',2,'no',0)" id="r1z1q2-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">4</div><div><div class="q-text">Применил ЗПДО?</div><div class="q-hint">З — факты, П — что меняется/остаётся, Д — шаг, О — вопросы</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r1z1',3,'yes',1)" id="r1z1q3-yes">✓ Да</button><button class="opt-btn" onclick="ans('r1z1',3,'partial',0.5)" id="r1z1q3-partial">~ Частично</button><button class="opt-btn" onclick="ans('r1z1',3,'no',0)" id="r1z1q3-no">✗ Нет</button></div></div>
+      <button class="reset-btn" onclick="resetCard('r1z1',4)">↺ Сбросить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== РАУНД 3 ===== -->
+<div class="round-panel visible" id="rp2">
+  <div class="lock-wrap" id="lock2" style="display: none;"><div class="lock-ico">🔒</div><p class="lock-t">Раунд 3 заблокирован</p><p class="lock-s">Тренер назовёт кодовое слово.</p><input class="lock-inp" id="inp2" type="text" placeholder="кодовое слово..." onkeydown="if(event.key==='Enter')unlock(2)"><button class="lock-btn-el" onclick="unlock(2)">Открыть</button><p class="lock-err" id="err2">Неверное слово</p></div>
+  <div id="cnt2" style="display: block;">
+    <div class="task-box"><p class="task-text">Останови раунд после 4 минут диалога, спроси как прошёл разговор и дай обратную связь по схеме ниже.</p></div>
+
+    <!-- Зал 1 -->
+    <div class="zal-panel" id="r2z0">
+      <div class="ctx-block">
+        <div class="ctx-title">Зал 1 · Стандарт тикетов</div>
+        <span class="ctx-barrier" style="background:#E1F5EE;color:#085041;">Барьер сотрудника: Ability</span>
+        <div class="ctx-barrier-desc">Знает как, но на практике не получается. Нужна практика и устранение барьеров</div>
+        <div class="ctx-desc">Хочет делать правильно, но на практике не получается. Список из 40 категорий непонятен, боится выбрать не ту.</div>
+      </div>
+      <div class="score-wrap"><div class="score-num" id="s-r2z0">0 <span>/ 4</span></div><span class="verdict" id="v-r2z0"></span></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">1</div><div><div class="q-text">Задал диагностический вопрос?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z0',0,'yes',1)" id="r2z0q0-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z0',0,'no',0)" id="r2z0q0-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">2</div><div><div class="q-text">Слушал, не перебивал?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z0',1,'yes',1)" id="r2z0q1-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z0',1,'partial',0.5)" id="r2z0q1-partial">~ Частично</button><button class="opt-btn" onclick="ans('r2z0',1,'no',0)" id="r2z0q1-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">3</div><div><div class="q-text">Правильно определил барьер? (Ability)</div><div class="q-hint">Знает как, но не получается применить на практике</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z0',2,'yes',1)" id="r2z0q2-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z0',2,'partial',0.5)" id="r2z0q2-partial">~ Частично</button><button class="opt-btn" onclick="ans('r2z0',2,'no',0)" id="r2z0q2-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">4</div><div><div class="q-text">Применил ЗПДО?</div><div class="q-hint">З — факты, П — что меняется/остаётся, Д — шаг, О — вопросы</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z0',3,'yes',1)" id="r2z0q3-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z0',3,'partial',0.5)" id="r2z0q3-partial">~ Частично</button><button class="opt-btn" onclick="ans('r2z0',3,'no',0)" id="r2z0q3-no">✗ Нет</button></div></div>
+      <button class="reset-btn" onclick="resetCard('r2z0',4)">↺ Сбросить</button>
+    </div>
+
+    <!-- Зал 2 -->
+    <div class="zal-panel visible" id="r2z1">
+      <div class="ctx-block">
+        <div class="ctx-title">Зал 2 · Формат отчётов</div>
+        <span class="ctx-barrier" style="background:#FAEEDA;color:#633806;">Барьер сотрудника: Desire</span>
+        <div class="ctx-barrier-desc">Понимает зачем изменение, но лично не хочет в нём участвовать</div>
+        <div class="ctx-desc">Понимает зачем новый формат, но лично не хочет. Опытный сотрудник, привык к свободному тексту, считает новый формат примитивным.</div>
+      </div>
+      <div class="score-wrap"><div class="score-num" id="s-r2z1">0 <span>/ 4</span></div><span class="verdict" id="v-r2z1"></span></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">1</div><div><div class="q-text">Задал диагностический вопрос?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z1',0,'yes',1)" id="r2z1q0-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z1',0,'no',0)" id="r2z1q0-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">2</div><div><div class="q-text">Слушал, не перебивал?</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z1',1,'yes',1)" id="r2z1q1-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z1',1,'partial',0.5)" id="r2z1q1-partial">~ Частично</button><button class="opt-btn" onclick="ans('r2z1',1,'no',0)" id="r2z1q1-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">3</div><div><div class="q-text">Правильно определил барьер? (Desire)</div><div class="q-hint">Понимает зачем, но лично не хочет участвовать</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z1',2,'yes',1)" id="r2z1q2-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z1',2,'partial',0.5)" id="r2z1q2-partial">~ Частично</button><button class="opt-btn" onclick="ans('r2z1',2,'no',0)" id="r2z1q2-no">✗ Нет</button></div></div>
+      <div class="q-block"><div class="q-head"><div class="q-num">4</div><div><div class="q-text">Применил ЗПДО?</div><div class="q-hint">З — факты, П — что меняется/остаётся, Д — шаг, О — вопросы</div></div></div><div class="q-opts"><button class="opt-btn" onclick="ans('r2z1',3,'yes',1)" id="r2z1q3-yes">✓ Да</button><button class="opt-btn" onclick="ans('r2z1',3,'partial',0.5)" id="r2z1q3-partial">~ Частично</button><button class="opt-btn" onclick="ans('r2z1',3,'no',0)" id="r2z1q3-no">✗ Нет</button></div></div>
+      <button class="reset-btn" onclick="resetCard('r2z1',4)">↺ Сбросить</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /allPanels -->
+
+<!-- Обратная связь всегда видна -->
+<div class="fb-block">
+  <div class="fb-head"><div class="fb-head-title">💬 Обратная связь после раунда</div><div class="fb-head-sub">Сначала что сработало, потом одно «по-другому»</div></div>
+  <div class="fb-body">
+    <div class="fb-step" style="background:#E1F5EE;"><div class="fb-step-n" style="background:#1D9E75;">1</div><div><div class="fb-step-t" style="color:#085041;">Сначала, что сработало</div><div class="fb-step-s">1, 2 конкретных момента из разговора</div></div></div>
+    <div class="fb-step" style="background:#FAEEDA;"><div class="fb-step-n" style="background:#EF9F27;">2</div><div><div class="fb-step-t" style="color:#633806;">Что можно было сделать по-другому</div><div class="fb-step-s">1 конкретное предложение</div></div></div>
+  </div>
+</div>
+
+<script>
+var PW={1:'барсук',2:'апельсин'};
+var unlocked=[true,false,false];
+var scores={};
+
+function ans(cardId,qi,type,pts){
+  if(!scores[cardId]) scores[cardId]=[];
+  scores[cardId][qi]={type:type,pts:pts};
+  var p=cardId+'q'+qi;
+  ['yes','partial','no'].forEach(function(t){var el=document.getElementById(p+'-'+t);if(el)el.className='opt-btn';});
+  var el=document.getElementById(p+'-'+type);
+  if(el)el.classList.add(type);
+  updateScore(cardId,4);
+}
+
+function updateScore(cardId,max){
+  var arr=scores[cardId]||[];
+  var total=arr.reduce(function(s,a){return s+(a?a.pts:0);},0);
+  total=Math.round(total*10)/10;
+  document.getElementById('s-'+cardId).innerHTML=total+' <span>/ '+max+'</span>';
+  var v=document.getElementById('v-'+cardId);
+  var pct=total/max;
+  if(pct>=0.75){v.textContent='🔥 Отлично';v.className='verdict v-great';}
+  else if(pct>=0.5){v.textContent='👍 Хорошо';v.className='verdict v-good';}
+  else if(total>0){v.textContent='💡 Над чем поработать';v.className='verdict v-try';}
+  else{v.textContent='';v.className='verdict';}
+}
+
+function resetCard(cardId,max){
+  scores[cardId]=[];
+  for(var qi=0;qi<max;qi++){
+    var p=cardId+'q'+qi;
+    ['yes','partial','no'].forEach(function(t){var el=document.getElementById(p+'-'+t);if(el)el.className='opt-btn';});
+  }
+  document.getElementById('s-'+cardId).innerHTML='0 <span>/ '+max+'</span>';
+  document.getElementById('v-'+cardId).textContent='';
+  document.getElementById('v-'+cardId).className='verdict';
+}
+
+function rebuildZalRow(ri){
+  document.getElementById('zalRow').innerHTML='<div class="zal-row"><button class="zal-btn active" onclick="showZal('+ri+',0)">🏠 Зал 1</button><button class="zal-btn" onclick="showZal('+ri+',1)">🏠 Зал 2</button></div>';
+}
+
+function showRound(ri){
+  if(!unlocked[ri])return;
+  document.querySelectorAll('.round-panel').forEach(function(p,i){p.classList.toggle('visible',i===ri);});
+  document.querySelectorAll('.round-btn').forEach(function(b,i){b.classList.remove('active');if(i===ri)b.classList.add('active');});
+  rebuildZalRow(ri);
+  document.getElementById('rp'+ri).querySelectorAll('.zal-panel').forEach(function(p,i){p.classList.toggle('visible',i===0);});
+}
+
+function tryRound(ri){
+  if(unlocked[ri]){showRound(ri);return;}
+  document.querySelectorAll('.round-panel').forEach(function(p,i){p.classList.toggle('visible',i===ri);});
+  document.querySelectorAll('.round-btn').forEach(function(b,i){b.classList.remove('active');if(i===ri)b.classList.add('active');});
+  document.getElementById('zalRow').innerHTML='';
+  var inp=document.getElementById('inp'+ri);
+  if(inp)setTimeout(function(){inp.focus();},100);
+}
+
+function showZal(ri,zi){
+  document.getElementById('rp'+ri).querySelectorAll('.zal-panel').forEach(function(p,i){p.classList.toggle('visible',i===zi);});
+  document.querySelectorAll('.zal-btn').forEach(function(b,i){b.classList.remove('active');if(i===zi)b.classList.add('active');});
+}
+
+function unlock(ri){
+  var v=document.getElementById('inp'+ri).value.trim().toLowerCase();
+  if(v===PW[ri]){
+    unlocked[ri]=true;
+    document.getElementById('lock'+ri).style.display='none';
+    document.getElementById('cnt'+ri).style.display='block';
+    var rb=document.getElementById('rb'+ri);
+    rb.classList.remove('locked');
+    rb.innerHTML='<span class="rbig">Р'+(ri+1)+'</span><span class="rsub">Раунд '+(ri+1)+'</span>';
+    showRound(ri);
+  }else{
+    var err=document.getElementById('err'+ri);
+    err.style.display='block';
+    setTimeout(function(){err.style.display='none';},2500);
+  }
+}
+</script>
+
+
+</body></html>

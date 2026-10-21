@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)https://iolenyak-sudo.github.io/Yana/all_rounds_manager.html -->
+<html lang="ru" data-lt-installed="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карточка руководителя</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4fb; padding: 1.25rem; color: #1a1a18; min-height: 100vh; }
+.header { background: #042C53; color: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; }
+.header-role { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; opacity: .7; margin-bottom: 4px; }
+.header-title { font-size: 16px; font-weight: 600; }
+.header-sub { font-size: 12px; opacity: .75; margin-top: 4px; }
+.nav-block { background: white; border-radius: 12px; border: 1px solid #c5d8f0; overflow: hidden; margin-bottom: 14px; }
+.round-row { display: flex; border-bottom: 1px solid #c5d8f0; }
+.round-btn { flex: 1; padding: 10px 6px; font-size: 11px; font-weight: 600; color: #042C53; cursor: pointer; background: transparent; border: none; border-right: 1px solid #c5d8f0; transition: all .15s; text-align: center; }
+.round-btn:last-child { border-right: none; }
+.round-btn:hover:not(.locked) { background: #ddeeff; }
+.round-btn.active { background: #042C53; color: white; }
+.round-btn.locked { color: #bbb; background: #f9f9f9; cursor: default; }
+.rbig { font-size: 13px; font-weight: 700; display: block; margin-bottom: 1px; }
+.rlock { font-size: 15px; display: block; margin-bottom: 1px; }
+.rsub { font-size: 10px; display: block; }
+.zal-row { display: flex; }
+.zal-btn { flex: 1; padding: 10px 8px; font-size: 12px; font-weight: 600; color: #555; cursor: pointer; background: transparent; border: none; border-right: 1px solid #eef3fa; transition: all .15s; text-align: center; }
+.zal-btn:last-child { border-right: none; }
+.zal-btn:hover { background: #f0f4fb; }
+.zal-btn.active { background: #042C53; color: white; }
+.round-panel { display: none; }
+.round-panel.visible { display: block; }
+.zal-panel { display: none; }
+.zal-panel.visible { display: block; }
+.card { background: white; border-radius: 12px; border: 1px solid #c5d8f0; overflow: hidden; }
+.card-header { padding: 12px 16px; }
+.card-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.65); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.card-title { font-size: 15px; font-weight: 700; color: white; line-height: 1.4; }
+.card-body { padding: 14px 16px; }
+.section { margin-bottom: 14px; }
+.section:last-child { margin-bottom: 0; }
+.slabel { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.task-box { background: #042C53; border-radius: 8px; padding: 10px 12px; }
+.task-text { font-size: 13px; color: #E6F1FB; line-height: 1.65; margin-bottom: 8px; }
+.zpdo-compact { background: rgba(255,255,255,0.12); border-radius: 6px; padding: 6px 8px; border-left: 3px solid rgba(255,255,255,0.35); }
+.zpdo-compact-row { display: flex; align-items: flex-start; gap: 8px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.zpdo-compact-row:last-child { border-bottom: none; }
+.zpdo-l { width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.zpdo-t { font-size: 11px; color: rgba(255,255,255,0.85); line-height: 1.4; }
+.phrase-box { background: #E1F5EE; border-radius: 8px; padding: 10px 12px; border-left: 3px solid #1D9E75; }
+.phrase-text { font-size: 13px; color: #085041; line-height: 1.65; font-style: italic; font-weight: 500; }
+.fact-box { background: #FAEEDA; border-radius: 8px; padding: 10px 12px; border-left: 3px solid #EF9F27; }
+.fact-text { font-size: 13px; color: #633806; line-height: 1.65; }
+.stays-box { background: #EAF3DE; border-radius: 8px; padding: 10px 12px; border-left: 3px solid #5DCAA5; }
+.stays-text { font-size: 13px; color: #27500A; line-height: 1.65; }
+.action-box { background: #E6F1FB; border-radius: 8px; padding: 10px 12px; border-left: 3px solid #185FA5; }
+.action-text { font-size: 13px; color: #042C53; line-height: 1.65; }
+.success-box { background: #E1F5EE; border-radius: 8px; padding: 10px 12px; border-left: 3px solid #1D9E75; }
+.success-item { font-size: 13px; color: #085041; line-height: 1.75; }
+.success-item::before { content: "✓  "; font-weight: 700; }
+.lock-wrap { background: white; border-radius: 12px; border: 1px solid #c5d8f0; padding: 32px 16px; text-align: center; }
+.lock-ico { font-size: 40px; margin-bottom: 12px; }
+.lock-t { font-size: 15px; font-weight: 700; color: #1a1a18; margin-bottom: 6px; }
+.lock-s { font-size: 12px; color: #999; margin-bottom: 20px; line-height: 1.6; }
+.lock-inp { width: 100%; max-width: 200px; border: 1.5px solid #c5d8f0; border-radius: 8px; padding: 10px 14px; font-size: 16px; text-align: center; outline: none; font-family: inherit; margin-bottom: 10px; letter-spacing: .08em; }
+.lock-inp:focus { border-color: #042C53; }
+.lock-btn-el { display: block; margin: 0 auto; padding: 10px 28px; border-radius: 8px; border: none; font-size: 13px; font-weight: 700; color: white; cursor: pointer; background: #042C53; }
+.lock-btn-el:hover { background: #0C447C; }
+.lock-err { font-size: 12px; color: #c0392b; margin-top: 10px; display: none; }
+</style>
+</head>
+<body>
+<div class="header">
+  <p class="header-role">Ролевая игра · Управление изменениями</p>
+  <p class="header-title">👔 Карточка руководителя</p>
+  <p class="header-sub">Выбери свой раунд и нажми на свой зал</p>
+</div>
+<div class="nav-block">
+  <div class="round-row">
+    <button class="round-btn" id="rb0" onclick="showRound(0)"><span class="rbig">Р1</span><span class="rsub">Раунд 1</span></button>
+    <button class="round-btn" id="rb1" onclick="tryRound(1)"><span class="rbig">Р2</span><span class="rsub">Раунд 2</span></button>
+    <button class="round-btn active" id="rb2" onclick="tryRound(2)"><span class="rbig">Р3</span><span class="rsub">Раунд 3</span></button>
+  </div>
+  <div id="zalRow"><div class="zal-row"><button class="zal-btn" onclick="showZal(2,0)">🏠 Зал 1</button><button class="zal-btn active" onclick="showZal(2,1)">🏠 Зал 2</button></div></div>
+</div>
+<div id="allPanels">
+
+<div class="round-panel" id="rp0">
+  <div class="zal-panel visible" id="r0z0"><div class="card">
+      <div class="card-header" style="background:#042C53;">
+        <p class="card-label">Раунд 1 · Зал 1</p>
+        <p class="card-title">Переход на CRM-систему</p>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <p class="slabel">Твоё задание</p>
+          <div class="task-box">
+            <p class="task-text">Определи барьер сотрудника через вопросы и проведи разговор по формуле ЗПДО. Слушай 70% времени. Разговор длится 4 минуты.</p>
+            <div class="zpdo-compact"><div class="zpdo-compact-row"><span class="zpdo-l">З</span><span class="zpdo-t">Зачем: объясни с конкретными фактами</span></div><div class="zpdo-compact-row"><span class="zpdo-l">П</span><span class="zpdo-t">По-новому: что меняется и что остаётся</span></div><div class="zpdo-compact-row"><span class="zpdo-l">Д</span><span class="zpdo-t">Действия: назови конкретный следующий шаг</span></div><div class="zpdo-compact-row"><span class="zpdo-l">О</span><span class="zpdo-t">Ответы: создай пространство для вопросов: «Что тебя беспокоит?»</span></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <p class="slabel">Контекст</p>
+          <div class="fact-box"><p class="fact-text">Компания переходит на новую CRM-систему. Старт через 10 дней. За прошлый квартал потеряли 4 клиентов, задачи терялись в блокнотах.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Что не изменится</p>
+          <div class="stays-box"><p class="stays-text">Состав команды, цели на квартал, клиенты. Меняется только инструмент.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Действия и апдейт</p>
+          <div class="action-box"><p class="action-text">На этой неделе получить доступы + пройти 2-часовое обучение в четверг. Первый отчёт через 10 дней. Апдейт в пятницу на общей встрече.</p></div>
+        </div>
+        
+
+        <div class="section">
+          <p class="slabel">Начни разговор с фразы</p>
+          <div class="phrase-box"><p class="phrase-text">«[Имя], хочу поговорить о переходе на CRM. Прежде чем рассказать детали, хочу сначала услышать тебя. Как ты вообще к этому относишься?»</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Критерий успеха</p>
+          <div class="success-box">
+            <p class="success-item">Определил барьер через вопросы</p>
+            <p class="success-item">Провёл разговор по ЗПДО</p>
+            <p class="success-item">Сотрудник согласился на следующий шаг</p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  <div class="zal-panel" id="r0z1"><div class="card">
+      <div class="card-header" style="background:#042C53;">
+        <p class="card-label">Раунд 1 · Зал 2</p>
+        <p class="card-title">Фиксация договорённостей в чате</p>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <p class="slabel">Твоё задание</p>
+          <div class="task-box">
+            <p class="task-text">Определи барьер сотрудника через вопросы и проведи разговор по формуле ЗПДО. Слушай 70% времени. Разговор длится 4 минуты.</p>
+            <div class="zpdo-compact"><div class="zpdo-compact-row"><span class="zpdo-l">З</span><span class="zpdo-t">Зачем: объясни с конкретными фактами</span></div><div class="zpdo-compact-row"><span class="zpdo-l">П</span><span class="zpdo-t">По-новому: что меняется и что остаётся</span></div><div class="zpdo-compact-row"><span class="zpdo-l">Д</span><span class="zpdo-t">Действия: назови конкретный следующий шаг</span></div><div class="zpdo-compact-row"><span class="zpdo-l">О</span><span class="zpdo-t">Ответы: создай пространство для вопросов: «Что тебя беспокоит?»</span></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <p class="slabel">Контекст</p>
+          <div class="fact-box"><p class="fact-text">Команда месяц работает по стандарту фиксации договорённостей в чате. Сотрудник три недели соблюдал идеально, потом скатился к старому. До внедрения договорённости терялись, были конфликты и срывы.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Что не изменится</p>
+          <div class="stays-box"><p class="stays-text">Стиль общения, доверие в команде. Меняется только одно действие, фиксация договорённостей в письменном виде.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Действия и апдейт</p>
+          <div class="action-box"><p class="action-text">Дай шаблон для срочных ситуаций. С этой недели договорённости без фиксации не действуют. Апдейт через неделю на общей встрече.</p></div>
+        </div>
+        
+
+        <div class="section">
+          <p class="slabel">Начни разговор с фразы</p>
+          <div class="phrase-box"><p class="phrase-text">«[Имя], я заметил что последние две недели договорённости снова идут устно, без фиксации в чате. Хочу разобраться что происходит, не с претензией, а честно.»</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Критерий успеха</p>
+          <div class="success-box">
+            <p class="success-item">Определил барьер через вопросы</p>
+            <p class="success-item">Провёл разговор по ЗПДО</p>
+            <p class="success-item">Сотрудник согласился на следующий шаг</p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+</div>
+
+<div class="round-panel" id="rp1">
+  <div class="lock-wrap" id="lock1" style="display: none;">
+    <div class="lock-ico">🔒</div>
+    <p class="lock-t">Раунд 2 заблокирован</p>
+    <p class="lock-s">Тренер назовёт кодовое слово.</p>
+    <input class="lock-inp" id="inp1" type="text" placeholder="кодовое слово..." onkeydown="if(event.key==='Enter')unlock(1)">
+    <button class="lock-btn-el" onclick="unlock(1)">Открыть</button>
+    <p class="lock-err" id="err1">Неверное слово, попробуй ещё раз</p>
+  </div>
+  <div id="cnt1" style="display: block;">
+    <div class="zal-panel visible" id="r1z0"><div class="card">
+      <div class="card-header" style="background:#185FA5;">
+        <p class="card-label">Раунд 2 · Зал 1</p>
+        <p class="card-title">Обязательные 1-on-1 раз в две недели</p>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <p class="slabel">Твоё задание</p>
+          <div class="task-box">
+            <p class="task-text">Определи барьер сотрудника через вопросы и проведи разговор по формуле ЗПДО. Слушай 70% времени. Разговор длится 4 минуты.</p>
+            <div class="zpdo-compact"><div class="zpdo-compact-row"><span class="zpdo-l">З</span><span class="zpdo-t">Зачем: объясни с конкретными фактами</span></div><div class="zpdo-compact-row"><span class="zpdo-l">П</span><span class="zpdo-t">По-новому: что меняется и что остаётся</span></div><div class="zpdo-compact-row"><span class="zpdo-l">Д</span><span class="zpdo-t">Действия: назови конкретный следующий шаг</span></div><div class="zpdo-compact-row"><span class="zpdo-l">О</span><span class="zpdo-t">Ответы: создай пространство для вопросов: «Что тебя беспокоит?»</span></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <p class="slabel">Контекст</p>
+          <div class="fact-box"><p class="fact-text">Компания вводит обязательные 1-on-1 раз в две недели. В прошлом квартале ушли двое сотрудников, на exit-интервью оба сказали: не понимали куда растут, боялись отвлечь руководителя.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Что не изменится</p>
+          <div class="stays-box"><p class="stays-text">Рабочие процессы, нагрузка, состав команды. Добавляется только 30 минут встречи раз в две недели.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Действия и апдейт</p>
+          <div class="action-box"><p class="action-text">Первая встреча в пятницу. Пришлю шаблон с вопросами для первой самооценки.</p></div>
+        </div>
+        
+
+        <div class="section">
+          <p class="slabel">Начни разговор с фразы</p>
+          <div class="phrase-box"><p class="phrase-text">«[Имя], хочу поговорить о новом формате встреч один на один. Что ты уже слышал об этом, и как к этому относишься?»</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Критерий успеха</p>
+          <div class="success-box">
+            <p class="success-item">Определил барьер через вопросы</p>
+            <p class="success-item">Провёл разговор по ЗПДО</p>
+            <p class="success-item">Сотрудник согласился на следующий шаг</p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="zal-panel" id="r1z1"><div class="card">
+      <div class="card-header" style="background:#185FA5;">
+        <p class="card-label">Раунд 2 · Зал 2</p>
+        <p class="card-title">Реорганизация: объединение с соседним отделом</p>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <p class="slabel">Твоё задание</p>
+          <div class="task-box">
+            <p class="task-text">Определи барьер сотрудника через вопросы и проведи разговор по формуле ЗПДО. Слушай 70% времени. Разговор длится 4 минуты.</p>
+            <div class="zpdo-compact"><div class="zpdo-compact-row"><span class="zpdo-l">З</span><span class="zpdo-t">Зачем: объясни с конкретными фактами</span></div><div class="zpdo-compact-row"><span class="zpdo-l">П</span><span class="zpdo-t">По-новому: что меняется и что остаётся</span></div><div class="zpdo-compact-row"><span class="zpdo-l">Д</span><span class="zpdo-t">Действия: назови конкретный следующий шаг</span></div><div class="zpdo-compact-row"><span class="zpdo-l">О</span><span class="zpdo-t">Ответы: создай пространство для вопросов: «Что тебя беспокоит?»</span></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <p class="slabel">Контекст</p>
+          <div class="fact-box"><p class="fact-text">Объявлена реорганизация, команда объединяется с соседним отделом. Финальная структура через 3 недели, часть ролей изменится. Объединение убирает дублирование, два отдела делали одно и то же.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Что не изменится</p>
+          <div class="stays-box"><p class="stays-text">Состав твоей группы и текущие проекты без изменений. Ближайшие дедлайны нужно закрывать.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Действия и апдейт</p>
+          <div class="action-box"><p class="action-text">На этой неделе обычный режим. Собираю вопросы от команды для руководства. Апдейт в пятницу после встречи с директором.</p></div>
+        </div>
+        
+
+        <div class="section">
+          <p class="slabel">Начни разговор с фразы</p>
+          <div class="phrase-box"><p class="phrase-text">«[Имя], я знаю что новость об объединении отделов непростая. Хочу поговорить честно, что ты сейчас думаешь об этом?»</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Критерий успеха</p>
+          <div class="success-box">
+            <p class="success-item">Определил барьер через вопросы</p>
+            <p class="success-item">Провёл разговор по ЗПДО</p>
+            <p class="success-item">Сотрудник согласился на следующий шаг</p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<div class="round-panel visible" id="rp2">
+  <div class="lock-wrap" id="lock2" style="display: none;">
+    <div class="lock-ico">🔒</div>
+    <p class="lock-t">Раунд 3 заблокирован</p>
+    <p class="lock-s">Тренер назовёт кодовое слово.</p>
+    <input class="lock-inp" id="inp2" type="text" placeholder="кодовое слово..." onkeydown="if(event.key==='Enter')unlock(2)">
+    <button class="lock-btn-el" onclick="unlock(2)">Открыть</button>
+    <p class="lock-err" id="err2">Неверное слово, попробуй ещё раз</p>
+  </div>
+  <div id="cnt2" style="display: block;">
+    <div class="zal-panel" id="r2z0"><div class="card">
+      <div class="card-header" style="background:#0F6E56;">
+        <p class="card-label">Раунд 3 · Зал 1</p>
+        <p class="card-title">Новый стандарт обработки клиентских обращений</p>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <p class="slabel">Твоё задание</p>
+          <div class="task-box">
+            <p class="task-text">Определи барьер сотрудника через вопросы и проведи разговор по формуле ЗПДО. Слушай 70% времени. Разговор длится 4 минуты.</p>
+            <div class="zpdo-compact"><div class="zpdo-compact-row"><span class="zpdo-l">З</span><span class="zpdo-t">Зачем: объясни с конкретными фактами</span></div><div class="zpdo-compact-row"><span class="zpdo-l">П</span><span class="zpdo-t">По-новому: что меняется и что остаётся</span></div><div class="zpdo-compact-row"><span class="zpdo-l">Д</span><span class="zpdo-t">Действия: назови конкретный следующий шаг</span></div><div class="zpdo-compact-row"><span class="zpdo-l">О</span><span class="zpdo-t">Ответы: создай пространство для вопросов: «Что тебя беспокоит?»</span></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <p class="slabel">Контекст</p>
+          <div class="fact-box"><p class="fact-text">Новый стандарт, каждый тикет закрывается с заполненным полем «причина обращения» и выбором категории из списка. Прошло две недели, половина тикетов пустые. Данные идут в ежемесячный отчёт для приоритизации доработок продукта.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Что не изменится</p>
+          <div class="stays-box"><p class="stays-text">Количество тикетов, нагрузка, дедлайны, состав команды. Добавляется только два поля при закрытии тикета.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Действия и апдейт</p>
+          <div class="action-box"><p class="action-text">Покажи прямо сейчас правильно заполненный тикет. Дай памятку с категориями. Апдейт через неделю, смотрим статистику заполнения.</p></div>
+        </div>
+        
+
+        <div class="section">
+          <p class="slabel">Начни разговор с фразы</p>
+          <div class="phrase-box"><p class="phrase-text">«[Имя], хочу обсудить заполнение тикетов, замечаю что поля часто остаются пустыми. Расскажи, что происходит, в чём сложность?»</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Критерий успеха</p>
+          <div class="success-box">
+            <p class="success-item">Определил барьер через вопросы</p>
+            <p class="success-item">Провёл разговор по ЗПДО</p>
+            <p class="success-item">Сотрудник согласился на следующий шаг</p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="zal-panel visible" id="r2z1"><div class="card">
+      <div class="card-header" style="background:#0F6E56;">
+        <p class="card-label">Раунд 3 · Зал 2</p>
+        <p class="card-title">Новый формат еженедельных отчётов</p>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <p class="slabel">Твоё задание</p>
+          <div class="task-box">
+            <p class="task-text">Определи барьер сотрудника через вопросы и проведи разговор по формуле ЗПДО. Слушай 70% времени. Разговор длится 4 минуты.</p>
+            <div class="zpdo-compact"><div class="zpdo-compact-row"><span class="zpdo-l">З</span><span class="zpdo-t">Зачем: объясни с конкретными фактами</span></div><div class="zpdo-compact-row"><span class="zpdo-l">П</span><span class="zpdo-t">По-новому: что меняется и что остаётся</span></div><div class="zpdo-compact-row"><span class="zpdo-l">Д</span><span class="zpdo-t">Действия: назови конкретный следующий шаг</span></div><div class="zpdo-compact-row"><span class="zpdo-l">О</span><span class="zpdo-t">Ответы: создай пространство для вопросов: «Что тебя беспокоит?»</span></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <p class="slabel">Контекст</p>
+          <div class="fact-box"><p class="fact-text">Новый формат отчётов, три раздела: результаты, риски, следующие шаги. Сотрудник три недели заполняет, но в раздел «риски» пишет задачи вместо рисков. Риски смотрит руководство для принятия решений.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Что не изменится</p>
+          <div class="stays-box"><p class="stays-text">Нагрузка, дедлайны, состав команды.</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Действия и апдейт</p>
+          <div class="action-box"><p class="action-text">Покажи на примере: вот риск, вот задача. Памятка: «риск = то что может помешать достичь цели». Проверка через неделю.</p></div>
+        </div>
+        
+
+        <div class="section">
+          <p class="slabel">Начни разговор с фразы</p>
+          <div class="phrase-box"><p class="phrase-text">«[Имя], хочу поговорить про раздел «риски» в твоих отчётах. Не с критикой, хочу разобраться вместе как это работает.»</p></div>
+        </div>
+        <div class="section">
+          <p class="slabel">Критерий успеха</p>
+          <div class="success-box">
+            <p class="success-item">Определил барьер через вопросы</p>
+            <p class="success-item">Провёл разговор по ЗПДО</p>
+            <p class="success-item">Сотрудник согласился на следующий шаг</p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+</div>
+<script>
+var PW={1:'барсук',2:'апельсин'};
+var unlocked=[true,false,false];
+function rebuildZalRow(ri){document.getElementById('zalRow').innerHTML='<div class="zal-row"><button class="zal-btn active" onclick="showZal('+ri+',0)">🏠 Зал 1</button><button class="zal-btn" onclick="showZal('+ri+',1)">🏠 Зал 2</button></div>';}
+function showRound(ri){if(!unlocked[ri])return;document.querySelectorAll('.round-panel').forEach(function(p,i){p.classList.toggle('visible',i===ri);});document.querySelectorAll('.round-btn').forEach(function(b,i){b.classList.remove('active');if(i===ri)b.classList.add('active');});rebuildZalRow(ri);document.getElementById('rp'+ri).querySelectorAll('.zal-panel').forEach(function(p,i){p.classList.toggle('visible',i===0);});}
+function tryRound(ri){if(unlocked[ri]){showRound(ri);return;}document.querySelectorAll('.round-panel').forEach(function(p,i){p.classList.toggle('visible',i===ri);});document.querySelectorAll('.round-btn').forEach(function(b,i){b.classList.remove('active');if(i===ri)b.classList.add('active');});document.getElementById('zalRow').innerHTML='';var inp=document.getElementById('inp'+ri);if(inp)setTimeout(function(){inp.focus();},100);}
+function showZal(ri,zi){document.getElementById('rp'+ri).querySelectorAll('.zal-panel').forEach(function(p,i){p.classList.toggle('visible',i===zi);});document.querySelectorAll('.zal-btn').forEach(function(b,i){b.classList.remove('active');if(i===zi)b.classList.add('active');});}
+function unlock(ri){var v=document.getElementById('inp'+ri).value.trim().toLowerCase();if(v===PW[ri]){unlocked[ri]=true;document.getElementById('lock'+ri).style.display='none';document.getElementById('cnt'+ri).style.display='block';var rb=document.getElementById('rb'+ri);rb.classList.remove('locked');rb.innerHTML='<span class="rbig">Р'+(ri+1)+'</span><span class="rsub">Раунд '+(ri+1)+'</span>';showRound(ri);}else{var err=document.getElementById('err'+ri);err.style.display='block';setTimeout(function(){err.style.display='none';},2500);}}
+</script>
+
+</body></html>
